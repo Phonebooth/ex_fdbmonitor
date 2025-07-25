@@ -1,0 +1,56 @@
+{
+    "general": {
+        "restart-delay": 60
+    },
+    "fdbserver": {
+        "command": "/usr/local/libexec/fdbserver",
+        "cluster-file": "/Users/dgulino/Documents/workspace/ex_fdbmonitor/.ex_fdbmonitor/onprem.1/etc/fdb.cluster",
+        "public-address": "auto:$ID",
+        "listen-address": "public",
+        "datadir": "/Users/dgulino/Documents/workspace/ex_fdbmonitor/.ex_fdbmonitor/onprem.1/data/$ID",
+        "logdir": "/Users/dgulino/Documents/workspace/ex_fdbmonitor/.ex_fdbmonitor/onprem.1/log",
+        "machine-id": "E70A9502",
+        "locality-machineid": "E70A9502",
+        "datacenter-id": "dc1",
+        "locality-dcid": "dc1"
+    },
+    "fdbserver.5062": {
+        "class": "stateless"
+    },
+    "fdbserver.5063": {
+        "class": "stateless"
+    },
+    "fdbserver.5064": {
+        "class": "stateless"
+    },
+    "fdbserver.5065": {
+        "class": "transaction"
+    },
+    "fdbserver.5066": {
+        "class": "transaction"
+    },
+    "fdbserver.5067": {
+        "class": "transaction"
+    },
+    "fdbserver.5068": {
+        "class": "storage"
+    },
+    "fdbserver.5069": {
+        "class": "storage"
+    },
+    "fdbserver.5070": {
+        "class": "storage"
+    },
+    "fdbserver.5071": {
+        "class": "storage"
+    },
+    "fdbserver.5072": {
+        "class": "storage"
+    },
+    "fdbserver.5073": {
+        "class": "storage"
+    },
+    "fdbserver.5074": {
+        "class": "storage"
+    }
+}
