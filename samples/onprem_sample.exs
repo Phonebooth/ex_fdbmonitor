@@ -31,11 +31,11 @@ onprem =
 
 {:nodes, nodes} = List.last(onprem)
 Logger.notice(inspect(nodes))
-#Enum.each(nodes, fn node -> 
-#    cluster_file = node.etc_dir <> "/fdb.cluster"
-#    {:ok, result} = Fdbcli.exec(cluster_file, "status")
-#    Logger.notice(result[:stdout])
-#  end)
+Enum.each(nodes, fn node ->
+  cluster_file = node.etc_dir <> "/fdb.cluster"
+  {:ok, result} = Fdbcli.exec(cluster_file, "status json")
+  Logger.notice(result[:stdout])
+end)
 
 :timer.sleep(100)
 
