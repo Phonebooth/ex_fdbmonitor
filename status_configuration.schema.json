@@ -23,14 +23,16 @@
                         "storage_engine": {
                             "type": "string",
                             "enum": [
-                                "ssd-2",
+                                "ssd",
                                 "ssd-1",
-                                "memory-2",
-                                "memory-1",
+                                "ssd-2",
+                                "ssd-redwood-1",
                                 "ssd-rocksdb-v1",
                                 "ssd-sharded-rocksdb",
                                 "memory",
-                                "custom"
+                                "memory-1",
+                                "memory-2",
+                                "memory-radixtree"
                             ]
                         },
                         "coordinators_count": {
@@ -125,11 +127,22 @@
                         "log_spill": {
                             "type": "integer"
                         },
+                        "logs": {
+                            "type": "integer"
+                        },
                         "log_engine": {
                             "type": "string",
                             "enum": [
                                 "ssd",
-                                "memory"
+                                "ssd-1",
+                                "ssd-2",
+                                "ssd-redwood-1",
+                                "ssd-rocksdb-v1",
+                                "ssd-sharded-rocksdb",
+                                "memory",
+                                "memory-1",
+                                "memory-2",
+                                "memory-radixtree"
                             ]
                         },
                         "remote_log_engine": {
@@ -157,6 +170,9 @@
                         "grv_proxies": {
                             "type": "integer"
                         },
+                        "proxies": {
+                            "type": "integer"
+                        },
                         "resolvers": {
                             "type": "integer"
                         },
@@ -168,6 +184,22 @@
                         },
                         "perpetual_storage_wiggle_locality": {
                             "type": "string"
+                        },
+                        "perpetual_storage_wiggle_engine": {
+                            "type": "string",
+                            "enum": [
+                                "ssd",
+                                "ssd-1",
+                                "ssd-2",
+                                "ssd-redwood-1",
+                                "ssd-rocksdb-v1",
+                                "ssd-sharded-rocksdb",
+                                "memory",
+                                "memory-1",
+                                "memory-2",
+                                "memory-radixtree-beta",
+                                "none"
+                            ]
                         },
                         "storage_migration_type": {
                             "type": "string",
@@ -183,6 +215,17 @@
                                 "disabled",
                                 "optional_experimental",
                                 "required_experimental"
+                            ]
+                        },
+                        "blob_granules_enabled": {
+                            "type": "integer"
+                        },
+                        "encryption_at_rest_mode": {
+                            "type": "string",
+                            "enum": [
+                                "disabled",
+                                "domain_aware",
+                                "cluster_aware"
                             ]
                         }
                     },
