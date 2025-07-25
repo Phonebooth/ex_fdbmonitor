@@ -1,0 +1,31 @@
+{
+    "cluster": {
+        "configuration": {
+            "redundancy_mode": "three_data_hall",
+            "storage_engine": "ssd-2",
+            "usable_regions": 2,
+            "regions": [
+                {
+                    "datacenters": [
+                        {
+                            "id": "dc1sat",
+                            "priority": 1
+                        }
+                    ]
+                },
+                {
+                    "datacenters": [
+                        {
+                            "id": "dc2",
+                            "priority": 1
+                        },
+                        {
+                            "id": "dc3",
+                            "priority": 1
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
