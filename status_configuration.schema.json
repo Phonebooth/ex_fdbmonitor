@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "FoundationDB Cluster Configuration",
-    "description": "JSON schema for the 'configuration' object within the 'cluster' object in FoundationDB status JSON.",
+    "title": "FoundationDB Status",
+    "description": "JSON schema for FoundationDB status JSON.",
     "type": "object",
     "properties": {
         "cluster": {
@@ -190,6 +190,114 @@
                 }
             },
             "additionalProperties": true
+        },
+        "client": {
+            "type": "object",
+            "properties": {
+                "coordinators": {
+                    "type": "object",
+                    "properties": {
+                        "coordinators": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "reachable": {
+                                        "type": "boolean"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "protocol": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "reachable",
+                                    "address",
+                                    "protocol"
+                                ]
+                            }
+                        },
+                        "quorum_reachable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "coordinators",
+                        "quorum_reachable"
+                    ]
+                },
+                "database_status": {
+                    "type": "object",
+                    "properties": {
+                        "available": {
+                            "type": "boolean"
+                        },
+                        "healthy": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "available",
+                        "healthy"
+                    ]
+                },
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "enum": [
+                                    "inconsistent_cluster_file",
+                                    "unreachable_cluster_controller",
+                                    "no_cluster_controller",
+                                    "status_incomplete_client",
+                                    "status_incomplete_coordinators",
+                                    "status_incomplete_error",
+                                    "status_incomplete_timeout",
+                                    "status_incomplete_cluster",
+                                    "quorum_not_reachable"
+                                ]
+                            },
+                            "description": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "description"
+                        ]
+                    }
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "cluster_file": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "string"
+                        },
+                        "up_to_date": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "path",
+                        "up_to_date"
+                    ]
+                }
+            },
+            "required": [
+                "coordinators",
+                "database_status",
+                "messages",
+                "timestamp",
+                "cluster_file"
+            ]
         }
     },
     "required": [
