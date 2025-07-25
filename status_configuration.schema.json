@@ -1,0 +1,199 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "FoundationDB Cluster Configuration",
+    "description": "JSON schema for the 'configuration' object within the 'cluster' object in FoundationDB status JSON.",
+    "type": "object",
+    "properties": {
+        "cluster": {
+            "type": "object",
+            "properties": {
+                "configuration": {
+                    "type": "object",
+                    "properties": {
+                        "redundancy_mode": {
+                            "type": "string",
+                            "enum": [
+                                "single",
+                                "double",
+                                "triple",
+                                "three_data_hall",
+                                "three_data_hall_fallback"
+                            ]
+                        },
+                        "storage_engine": {
+                            "type": "string",
+                            "enum": [
+                                "ssd-2",
+                                "ssd-1",
+                                "memory-2",
+                                "memory-1",
+                                "ssd-rocksdb-v1",
+                                "ssd-sharded-rocksdb",
+                                "memory",
+                                "custom"
+                            ]
+                        },
+                        "coordinators_count": {
+                            "type": "integer"
+                        },
+                        "excluded_servers": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "time": {
+                                        "type": "number"
+                                    }
+                                },
+                                "required": [
+                                    "address"
+                                ]
+                            }
+                        },
+                        "regions": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "datacenters": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "priority": {
+                                                    "type": "integer"
+                                                },
+                                                "satellite_logs": {
+                                                    "type": "integer"
+                                                },
+                                                "satellites": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "priority": {
+                                                                "type": "integer"
+                                                            },
+                                                            "satellite_logs": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id"
+                                            ]
+                                        }
+                                    },
+                                    "satellite_redundancy_mode": {
+                                        "type": "string",
+                                        "enum": [
+                                            "one_satellite_single",
+                                            "one_satellite_double",
+                                            "two_satellite_safe",
+                                            "two_satellite_fast"
+                                        ]
+                                    },
+                                    "satellite_log_replicas": {
+                                        "type": "integer"
+                                    },
+                                    "satellite_usable_dcs": {
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        },
+                        "usable_regions": {
+                            "type": "integer"
+                        },
+                        "log_version": {
+                            "type": "integer"
+                        },
+                        "log_spill": {
+                            "type": "integer"
+                        },
+                        "log_engine": {
+                            "type": "string",
+                            "enum": [
+                                "ssd",
+                                "memory"
+                            ]
+                        },
+                        "remote_log_engine": {
+                            "type": "string",
+                            "enum": [
+                                "ssd",
+                                "memory"
+                            ]
+                        },
+                        "log_replicas": {
+                            "type": "integer"
+                        },
+                        "remote_log_replicas": {
+                            "type": "integer"
+                        },
+                        "log_anti_quorum": {
+                            "type": "integer"
+                        },
+                        "storage_replicas": {
+                            "type": "integer"
+                        },
+                        "commit_proxies": {
+                            "type": "integer"
+                        },
+                        "grv_proxies": {
+                            "type": "integer"
+                        },
+                        "resolvers": {
+                            "type": "integer"
+                        },
+                        "backup_worker_enabled": {
+                            "type": "integer"
+                        },
+                        "perpetual_storage_wiggle": {
+                            "type": "integer"
+                        },
+                        "perpetual_storage_wiggle_locality": {
+                            "type": "string"
+                        },
+                        "storage_migration_type": {
+                            "type": "string",
+                            "enum": [
+                                "disabled",
+                                "aggressive",
+                                "gradual"
+                            ]
+                        },
+                        "tenant_mode": {
+                            "type": "string",
+                            "enum": [
+                                "disabled",
+                                "optional_experimental",
+                                "required_experimental"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": true
+        }
+    },
+    "required": [
+        "cluster"
+    ],
+    "additionalProperties": false
+}
