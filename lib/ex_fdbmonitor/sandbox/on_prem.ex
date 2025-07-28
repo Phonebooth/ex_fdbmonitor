@@ -9,10 +9,10 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
   @dc1sat "dc1sat"
   @dc2 "dc2"
 
-  #write @regions to /tmp/regions-onprem.json file, encoding @regions as  JSON AI!
   @regions [
     datacenters: [
-      %{id: @dc1,
+      %{
+        id: @dc1,
         priority: 1,
         satellite: 1,
         satellite_logs: 2
@@ -21,6 +21,8 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
     satellite_redundancy_mode: "one_satellite_double",
     satellite_logs: 2
   ]
+
+  File.write!("/tmp/regions-onprem.json", JSON.encode!(@regions))
 
   def checkout(name, options \\ []) do
     Sandbox.checkout(name, @n, config: [ex_fdbmonitor: &config(&1, &2, name, options)])
