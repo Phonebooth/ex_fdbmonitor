@@ -1,5 +1,7 @@
 import Config
 
+fdb_storage_engine = System.get_env("FDB_STORAGE_ENGINE") || "ssd-redwood-1-experimental"
+
 config :ex_fdbmonitor,
   bootstrap: [
     cluster: [
@@ -10,9 +12,10 @@ config :ex_fdbmonitor,
       log_dir: ".ex_fdbmonitor/dev/log",
       fdbservers: [
         [port: 5000]
-      ]
+      ],
+      fdb_storage_engine: fdb_storage_engine
     ],
-    fdbcli: ~w[configure new single ssd-redwood-1 tenant_mode=optional_experimental]
+    fdbcli: ~w[configure new single #{fdb_storage_engine} tenant_mode=optional_experimental]
   ]
 
 config :ex_fdbmonitor,

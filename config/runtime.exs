@@ -1,5 +1,7 @@
 import Config
 
+fdb_storage_engine = System.get_env("FDB_STORAGE_ENGINE") || "ssd-redwood-1-experimental"
+
 if config_env() == :prod do
   config :ex_fdbmonitor,
     fdbmonitor: System.get_env("FDBMONITOR_PATH") || "/usr/local/libexec/fdbmonitor",
@@ -51,11 +53,12 @@ if config_env() == :prod do
         log_dir: Path.join(database_path, "log"),
         memory: System.get_env("FDBSERVER_MEMORY") || nil,
         cache_memory: System.get_env("FDBSERVER_CACHE_MEMORY") || nil,
-        fdbservers: [[port: 4500]]
+        fdbservers: [[port: 4500]],
+        fdb_storage_engine: fdb_storage_engine
       ],
       fdbcli:
         if(node_idx == 0,
-          do: ~w[configure new single #{System.get_env("FDB_STORAGE_ENGINE") || "ssd-redwood-1"}]
+          do: ~w[configure new single #{fdb_storage_engine}]
         ),
       fdbcli: if(node_idx == 2, do: ~w[configure double]),
       fdbcli: if(node_idx == node_count - 1, do: ~w[coordinators auto])
