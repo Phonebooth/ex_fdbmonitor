@@ -3,7 +3,7 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
 
   require Logger
 
-  @n 8 
+  @n 16
   @max_m 12
 
   @dc1 "dc1"
@@ -67,15 +67,17 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
       :timer.sleep(poll_interval_ms)
   end
 
-  def make_replication_healthy(cluster_file) do
+  def make_is_replication_healthy(cluster_file) do
     fn ->
-       {:ok, result} = :exec.run("fdbcli -C #{cluster_file} --exec 'status' | grep Replication",[:sync, :stdout])
-       replication_health = String.trim(List.first(result[:stdout])) |> String.split("- ") |> List.last()
-       if replication_health == "Healthy" do
-         Logger.notice("replication_health is '#{replication_health}', continuing...")
+      {:ok, result} = :exec.run(["/usr/local/bin/fdbcli","-C",cluster_file,"--exec","status json"],[:sync, :stdout])
+      json = JSON.decode!(Enum.join(result[:stdout]))
+      replication_health = get_in(json,["cluster","data","state","name"])
+      replication_description = get_in(json,["cluster","data","state","description"])
+       if replication_health == "healthy" do
+         Logger.notice("replication_health is '#{replication_health}', '#{replication_description}', continuing...")
          true
        else
-         Logger.notice("replication_health is '#{replication_health}', polling again...")
+         Logger.notice("replication_health is '#{replication_health}', '#{replication_description}' polling again...")
          false
        end
     end
@@ -92,11 +94,11 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
   defp cluster_config(0), do: [coordinator_addr: "127.0.0.1"]
   defp cluster_config(_), do: :autojoin
 
-  defp config(x, node, name, options) when x >= 0 and x < 6 do
+  defp config(x, node, name, options) when x >= 0 and x < 12 do
     dc1_config(x, node, name, options)
   end
 
-  defp config(x, node, name, options) when x >= 6 and x < 9 do
+  defp config(x, node, name, options) when x >= 12 and x < 24 do
     dc2_config(x, node, name, options)
   end
 
@@ -150,7 +152,7 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
         ),
         fdbcli:
         if(x == 0, do: ~w[configure new single #{fdb_storage_engine} tenant_mode=optional_experimental]),
-        fdbcli: if(x == 5, do: ~w[configure double])
+        fdbcli: if(x == 5, do: ~w[configure triple])
       ],
       etc_dir: Sandbox.etc_dir(name, x),
       run_dir: Sandbox.run_dir(name, x)
