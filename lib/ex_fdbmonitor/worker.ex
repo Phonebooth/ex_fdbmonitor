@@ -67,6 +67,7 @@ defmodule ExFdbmonitor.Worker do
     etc_dir = run_config[:etc_dir]
 
     fdbservers = bootstrap_config[:conf][:fdbservers]
+    ip = bootstrap_config[:conf][:ip]
 
     cluster_file =
       case bootstrap_config[:cluster] do
@@ -89,7 +90,7 @@ defmodule ExFdbmonitor.Worker do
 
     conf_assigns =
       bootstrap_config[:conf]
-      |> Keyword.merge(data_dir: data_dir, log_dir: log_dir, cluster_file: cluster_file)
+      |> Keyword.merge(data_dir: data_dir, log_dir: log_dir, cluster_file: cluster_file, ip: ip)
 
     conf_assigns = ExFdbmonitor.Conf.assigns(conf_assigns)
     check_config(conf_assigns)

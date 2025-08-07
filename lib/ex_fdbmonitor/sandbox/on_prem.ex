@@ -3,13 +3,15 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
 
   require Logger
 
-  @n 16
+  #This requires having enough loopback (127.0.0.x) addresses for each machine
+  #see priv/mac_local_loopback_addresses.sh
+
+  @n_each 6
+  @n @n_each * 2
   @max_m 12
 
   @dc1 "dc1"
-  #@dc1sat "dc1sat"
   @dc2 "dc2"
-  #@dc3 "dc3"
 
   @regions1  %{
     regions: [
@@ -94,34 +96,21 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
   defp cluster_config(0), do: [coordinator_addr: "127.0.0.1"]
   defp cluster_config(_), do: :autojoin
 
-  defp config(x, node, name, options) when x >= 0 and x < 12 do
+  defp config(x, node, name, options) when x >= 0 and x < @n_each do
     dc1_config(x, node, name, options)
   end
 
-  defp config(x, node, name, options) when x >= 12 and x < 24 do
+  defp config(x, node, name, options) when x >= @n_each and x < @n do
     dc2_config(x, node, name, options)
   end
 
-  #defp config(x, node, name, options) when x >= 6 and x < 9 do
-  #  dc1sat_config(x, node, name, options)
-  #end
-
-  #defp config(x, node, name, options) when x >= 9 and x < 15 do
-  #  dc2_config(x, node, name, options)
-  #end
-
-  #defp config(x, node, name, options) when x >= 9 and x < 15 do
-  #  dc3_config(x, node, name, options)
-  #end
-
   defp dc1_config(x, _node, name, options) do
     starting_port = Keyword.get(options, :starting_port, 5000)
+    starting_ip = Keyword.get(options, :starting_ip, 1)
     conf_assigns = Keyword.get(options, :conf_assigns, [])
     bootstrap = Application.fetch_env!(:ex_fdbmonitor, :bootstrap)
-    Logger.notice("bootstrap: '#{inspect(bootstrap)}'")
     conf = Keyword.get(bootstrap, :conf)
     fdb_storage_engine = Keyword.get(conf, :fdb_storage_engine)
-    Logger.notice("fdb_storage_engine: '#{fdb_storage_engine}'")
 
     [
       bootstrap: [
@@ -132,6 +121,7 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
             data_dir: Sandbox.data_dir(name, x),
             log_dir: Sandbox.log_dir(name, x),
             datacenter_id: @dc1,
+            ip: starting_ip + x,
             fdbservers: [
               [port: starting_port + x * @max_m + 0, class: :stateless],
               [port: starting_port + x * @max_m + 1, class: :stateless],
@@ -158,33 +148,9 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
       run_dir: Sandbox.run_dir(name, x)
       ]
   end
-
-  #  defp dc1sat_config(x, _node, name, options) do
-  #    starting_port = Keyword.get(options, :starting_port, 5000)
-  #    conf_assigns = Keyword.get(options, :conf_assigns, [])
-  #  
-  #    [
-  #      bootstrap: [
-  #        cluster: cluster_config(x),
-  #        conf:
-  #        Keyword.merge(
-  #          [
-  #            data_dir: Sandbox.data_dir(name, x),
-  #            log_dir: Sandbox.log_dir(name, x),
-  #            datacenter_id: @dc1sat,
-  #            fdbservers: [
-  #              [port: starting_port + x * @max_m + 0, class: :transaction]
-  #            ]
-  #          ],
-  #          conf_assigns
-  #        )
-  #      ],
-  #      etc_dir: Sandbox.etc_dir(name, x),
-  #      run_dir: Sandbox.run_dir(name, x)
-  #    ]
-  #  end
   
   defp dc2_config(x, _node, name, options) do
+    starting_ip = Keyword.get(options, :starting_ip, 1)
     starting_port = Keyword.get(options, :starting_port, 5000)
     conf_assigns = Keyword.get(options, :conf_assigns, [])
 
@@ -197,6 +163,7 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
             data_dir: Sandbox.data_dir(name, x),
             log_dir: Sandbox.log_dir(name, x),
             datacenter_id: @dc2,
+            ip: starting_ip + x,
             fdbservers: [
               [port: starting_port + x * @max_m + 0, class: :stateless],
               [port: starting_port + x * @max_m + 1, class: :stateless],
@@ -214,40 +181,19 @@ defmodule ExFdbmonitor.Sandbox.OnPrem do
             ]
           ],
           conf_assigns
-        )
+        ),
       ],
       etc_dir: Sandbox.etc_dir(name, x),
       run_dir: Sandbox.run_dir(name, x)
     ]
   end
 
-  #defp dc3_config(x, _node, name, options) do
-  #  starting_port = Keyword.get(options, :starting_port, 5000)
-  #  conf_assigns = Keyword.get(options, :conf_assigns, [])
-  #
-  #  [
-  #    bootstrap: [
-  #      cluster: cluster_config(x),
-  #      conf:
-  #      Keyword.merge(
-  #        [
-  #          data_dir: Sandbox.data_dir(name, x),
-  #          log_dir: Sandbox.log_dir(name, x),
-  #          datacenter_id: @dc3,
-  #          fdbservers: [
-  #            [port: starting_port + x * @max_m + 0, class: :stateless]
-  #          ]
-  #        ],
-  #        conf_assigns
-  #      ),
-  #      fdbcli:
-  #      if(x == 17,
-  #        do:
-  #        ~w[coordinators 127.0.0.1:5000 127.0.0.1:5012 127.0.0.1:5024 127.0.0.1:5108 127.0.0.1:5120 127.0.0.1:5132 127.0.0.1:5180 127.0.0.1:5192 127.0.0.1:5204]
-  #      )
-  #        ],
-  #      etc_dir: Sandbox.etc_dir(name, x),
-  #      run_dir: Sandbox.run_dir(name, x)
-  #    ]
-  #    end
+  def coordinators(start_ip, start_port, machines_per_dc, process_per_machine, num_coordinators) do
+    step = Integer.floor_div(machines_per_dc,num_coordinators)
+    list = Enum.map(Range.new(0,machines_per_dc-1, step), fn ip -> 
+        "127.0.0.#{start_ip + ip}:#{start_port + (process_per_machine * ip) + ip}" 
+    end)
+    Enum.join(list," ")
+  end
+
 end
